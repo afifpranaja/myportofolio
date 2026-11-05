@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+    <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+    <linearGradient id="sunGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#d97706" />
+    </linearGradient>
+    <linearGradient id="panelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="600" fill="url(#bgGrad)" />
+  
+  <!-- Subtle Grid Lines -->
+  <g stroke="#334155" stroke-width="1" stroke-dasharray="4,6" opacity="0.4">
+    <line x1="0" y1="150" x2="800" y2="150" />
+    <line x1="0" y1="300" x2="800" y2="300" />
+    <line x1="0" y1="450" x2="800" y2="450" />
+    <line x1="200" y1="0" x2="200" y2="600" />
+    <line x1="400" y1="0" x2="400" y2="600" />
+    <line x1="600" y1="0" x2="600" y2="600" />
+  </g>
+
+  <!-- Title Badge -->
+  <rect x="50" y="45" width="230" height="32" rx="16" fill="rgba(56, 189, 248, 0.12)" stroke="rgba(56, 189, 248, 0.3)" />
+  <text x="75" y="66" fill="#38bdf8" font-family="system-ui, sans-serif" font-size="13" font-weight="600" letter-spacing="1">400 Wp SMART SOLAR PV</text>
+
+  <!-- Solar PV Module -->
+  <g transform="translate(80, 160)">
+    <rect x="0" y="0" width="180" height="240" rx="12" fill="url(#panelGrad)" stroke="#38bdf8" stroke-width="2" />
+    <!-- Solar Cells Grid -->
+    <rect x="12" y="15" width="46" height="62" rx="4" fill="#0284c7" opacity="0.3" stroke="#38bdf8" stroke-width="1"/>
+    <rect x="67" y="15" width="46" height="62" rx="4" fill="#0284c7" opacity="0.3" stroke="#38bdf8" stroke-width="1"/>
+    <rect x="122" y="15" width="46" height="62" rx="4" fill="#0284c7" opacity="0.3" stroke="#38bdf8" stroke-width="1"/>
+    <rect x="12" y="87" width="46" height="62" rx="4" fill="#0284c7" opacity="0.3" stroke="#38bdf8" stroke-width="1"/>
+    <rect x="67" y="87" width="46" height="62" rx="4" fill="#0284c7" opacity="0.3" stroke="#38bdf8" stroke-width="1"/>
+    <rect x="122" y="87" width="46" height="62" rx="4" fill="#0284c7" opacity="0.3" stroke="#38bdf8" stroke-width="1"/>
+    <rect x="12" y="159" width="46" height="62" rx="4" fill="#0284c7" opacity="0.3" stroke="#38bdf8" stroke-width="1"/>
+    <rect x="67" y="159" width="46" height="62" rx="4" fill="#0284c7" opacity="0.3" stroke="#38bdf8" stroke-width="1"/>
+    <rect x="122" y="159" width="46" height="62" rx="4" fill="#0284c7" opacity="0.3" stroke="#38bdf8" stroke-width="1"/>
+    <text x="90" y="270" text-anchor="middle" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="14" font-weight="500">Solar Array 400 Wp</text>
+  </g>
+
+  <!-- Flow Line 1 -->
+  <path d="M 260 280 L 330 280" stroke="#38bdf8" stroke-width="3" stroke-dasharray="6,4" />
+  <circle cx="295" cy="280" r="4" fill="#38bdf8" />
+
+  <!-- ESP32 Controller Box -->
+  <g transform="translate(330, 180)">
+    <rect x="0" y="0" width="160" height="200" rx="14" fill="#0f172a" stroke="#0ea5e9" stroke-width="2.5" />
+    <rect x="25" y="25" width="110" height="40" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
+    <text x="80" y="50" text-anchor="middle" fill="#f8fafc" font-family="monospace" font-size="14" font-weight="700">ESP32 Core</text>
+    
+    <!-- Relay Status Indicators -->
+    <circle cx="40" cy="100" r="7" fill="#10b981" />
+    <text x="56" y="104" fill="#cbd5e1" font-family="monospace" font-size="11">CH-1 (L1)</text>
+
+    <circle cx="40" cy="125" r="7" fill="#10b981" />
+    <text x="56" y="129" fill="#cbd5e1" font-family="monospace" font-size="11">CH-2 (L2)</text>
+
+    <circle cx="40" cy="150" r="7" fill="#f59e0b" />
+    <text x="56" y="154" fill="#cbd5e1" font-family="monospace" font-size="11">CH-3 (L3)</text>
+
+    <circle cx="40" cy="175" r="7" fill="#ef4444" />
+    <text x="56" y="179" fill="#cbd5e1" font-family="monospace" font-size="11">CH-4 (SHED)</text>
+
+    <text x="80" y="230" text-anchor="middle" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="14" font-weight="500">Smart Load Logic</text>
+  </g>
+
+  <!-- Flow Line 2 -->
+  <path d="M 490 280 L 560 280" stroke="#38bdf8" stroke-width="3" stroke-dasharray="6,4" />
+  <circle cx="525" cy="280" r="4" fill="#38bdf8" />
+
+  <!-- Cloudflare / Telemetry Dashboard Screen -->
+  <g transform="translate(560, 160)">
+    <rect x="0" y="0" width="180" height="240" rx="12" fill="#0f172a" stroke="#f59e0b" stroke-width="2" />
+    <!-- Header bar -->
+    <rect x="0" y="0" width="180" height="30" rx="12" fill="#1e293b" />
+    <circle cx="15" cy="15" r="4" fill="#ef4444" />
+    <circle cx="28" cy="15" r="4" fill="#f59e0b" />
+    <circle cx="41" cy="15" r="4" fill="#10b981" />
+    
+    <!-- Gauge / Chart -->
+    <text x="90" y="65" text-anchor="middle" fill="#38bdf8" font-family="monospace" font-size="20" font-weight="700">87.4%</text>
+    <text x="90" y="82" text-anchor="middle" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="11">Battery SOC</text>
+
+    <rect x="25" y="105" width="130" height="8" rx="4" fill="#334155" />
+    <rect x="25" y="105" width="105" height="8" rx="4" fill="#38bdf8" />
+
+    <text x="25" y="145" fill="#e2e8f0" font-family="monospace" font-size="11">V_bat : 25.6 V</text>
+    <text x="25" y="165" fill="#e2e8f0" font-family="monospace" font-size="11">I_load: 6.82 A</text>
+    <text x="25" y="185" fill="#e2e8f0" font-family="monospace" font-size="11">P_act : 174.5 W</text>
+    <text x="25" y="205" fill="#10b981" font-family="monospace" font-size="11">MQTT : LIVE 2s</text>
+
+    <text x="90" y="270" text-anchor="middle" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="14" font-weight="500">Cloud Web Dashboard</text>
+  </g>
+
+  <!-- Bottom Accent / Specs -->
+  <text x="400" y="530" text-anchor="middle" fill="#cbd5e1" font-family="system-ui, sans-serif" font-size="16" font-weight="600">
+    Undergraduate Thesis • State Polytechnic of Malang • 2026
+  </text>
+  <text x="400" y="555" text-anchor="middle" fill="#64748b" font-family="system-ui, sans-serif" font-size="13">
+    Multi-Channel Dynamic Load Shedding &amp; Real-time Telemetry
+  </text>
+</svg>
