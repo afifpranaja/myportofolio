@@ -262,6 +262,10 @@ body.light .project-card:hover, body.light .cert-card:hover, body.light .tool-ca
   background: #0b0f19;
   border: 1px solid var(--border);
 }
+.project-pdf-preview {
+  display: block;
+  pointer-events: none;
+}
 .project-details { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; }
 .project-copy { min-width: 0; flex: 1; }
 .card-title {
