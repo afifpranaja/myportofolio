@@ -262,10 +262,13 @@ body.light .project-card:hover, body.light .cert-card:hover, body.light .tool-ca
   background: #0b0f19;
   border: 1px solid var(--border);
 }
+<<<<<<< HEAD
 .project-pdf-preview {
   display: block;
   pointer-events: none;
 }
+=======
+>>>>>>> ef704a0aaa36c402f6c9c94490c40b86336b878f
 .project-details { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; }
 .project-copy { min-width: 0; flex: 1; }
 .card-title {
@@ -292,11 +295,14 @@ body.light .project-card:hover, body.light .cert-card:hover, body.light .tool-ca
   background: var(--tag);
   color: var(--body);
   transition: all .2s ease;
+<<<<<<< HEAD
   cursor: pointer;
   padding: 0;
 }
 .project-card[data-open-doc] {
   cursor: pointer;
+=======
+>>>>>>> ef704a0aaa36c402f6c9c94490c40b86336b878f
 }
 .project-card:hover .arrow-button, .cert-card:hover .arrow-button, .contact-card:hover .arrow-button {
   color: var(--heading);
@@ -362,6 +368,7 @@ body.light .resume-card:hover { border-color: rgba(0, 0, 0, 0.12); }
   color: var(--amber);
   width: fit-content;
 }
+<<<<<<< HEAD
 .cert-tag.cyan {
   background: rgba(56, 189, 248, 0.15);
   color: var(--primary);
@@ -370,6 +377,8 @@ body.light .resume-card:hover { border-color: rgba(0, 0, 0, 0.12); }
   background: rgba(16, 185, 129, 0.15);
   color: var(--green);
 }
+=======
+>>>>>>> ef704a0aaa36c402f6c9c94490c40b86336b878f
 
 /* Tools */
 .tool-card {
@@ -422,6 +431,7 @@ body.light .resume-card:hover { border-color: rgba(0, 0, 0, 0.12); }
 .copyright a { color: var(--body); text-decoration: underline; text-underline-offset: 3px; }
 .copyright a:hover { color: var(--heading); }
 
+<<<<<<< HEAD
 /* Document Viewer Modal */
 .doc-modal-overlay {
   position: fixed;
@@ -787,6 +797,8 @@ body.light .doc-viewport {
   line-height: 1.6;
 }
 
+=======
+>>>>>>> ef704a0aaa36c402f6c9c94490c40b86336b878f
 /* Responsive adjustments */
 @media (max-width: 809.98px) {
   .site-header { padding-top: 12px; }
@@ -809,9 +821,12 @@ body.light .doc-viewport {
   .cert-info { width: 100%; }
   .contact-info { width: 100%; flex-direction: column; align-items: flex-start; gap: 6px; }
   .contact-label, .contact-value { flex: none; width: 100%; text-align: left; }
+<<<<<<< HEAD
   .doc-modal-box { height: 96vh; max-height: 96vh; border-radius: 16px; }
   .doc-modal-header { padding: 12px 16px; }
   .doc-tabs-bar { padding: 8px 16px; }
   .doc-toolbar { padding: 8px 16px; flex-direction: column; align-items: flex-start; gap: 8px; }
   .doc-actions { width: 100%; justify-content: flex-end; }
+=======
+>>>>>>> ef704a0aaa36c402f6c9c94490c40b86336b878f
 }

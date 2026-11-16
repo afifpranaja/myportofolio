@@ -1,7 +1,11 @@
 /**
  * Main JavaScript for Afif Athaullah Pranaja Portfolio
+<<<<<<< HEAD
  * Handles live clock, dark/light theme switching with persistence,
  * and Interactive Engineering Document Viewer Modal.
+=======
+ * Handles live clock and dark/light theme switching with persistence.
+>>>>>>> ef704a0aaa36c402f6c9c94490c40b86336b878f
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -33,6 +37,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const themeIcon = document.getElementById('theme-icon');
 
   if (themeToggle && themeIcon) {
+<<<<<<< HEAD
+=======
+    // Check saved preference or system preference
+>>>>>>> ef704a0aaa36c402f6c9c94490c40b86336b878f
     const savedTheme = localStorage.getItem('site-theme');
     if (savedTheme === 'light') {
       document.body.classList.add('light');
@@ -47,6 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('site-theme', isLight ? 'light' : 'dark');
     });
   }
+<<<<<<< HEAD
 
   // ==========================================
   // Engineering Document Viewer Modal System
@@ -220,4 +229,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   });
+=======
+>>>>>>> ef704a0aaa36c402f6c9c94490c40b86336b878f
 });
