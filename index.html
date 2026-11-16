@@ -258,14 +258,20 @@
 
         <!-- Project 7: JD-TS PLC Competition WSEC 2024 -->
         <div class="project-card" data-open-doc="jd-ts">
-          <div class="project-file-preview" aria-hidden="true">
-            <svg class="icon" viewBox="0 0 24 24"><use href="#i-table"></use></svg>
-            <span class="project-file-badge">WORKBOOK · XLSX</span>
+          <div class="project-file-preview gantt-project-preview" aria-hidden="true">
+            <div class="gantt-mini-sheet">
+              <div class="gantt-mini-row gantt-mini-heading"><span>Jobdesk</span><span>Timeline</span></div>
+              <div class="gantt-mini-row"><span>Membentuk Kepanitiaan</span><span><i style="--bar-width: 6%"></i></span></div>
+              <div class="gantt-mini-row"><span>Membuat konsep acara</span><span><i style="--bar-width: 7%"></i></span></div>
+              <div class="gantt-mini-row"><span>Mengawasi jalannya acara</span><span><i style="--bar-width: 93%"></i></span></div>
+              <div class="gantt-mini-row"><span>Mengkoordinir setiap sie</span><span><i style="--bar-width: 95%"></i></span></div>
+            </div>
+            <span class="project-file-badge">GANTT CHART · EXCEL</span>
           </div>
           <div class="project-details">
             <div class="project-copy">
-              <h3 class="card-title">Gantt Chart / Time Schedule PLC Competition 2024</h3>
-              <p class="card-subtitle">WSEC 2024 · Workbook kompetisi PLC</p>
+              <h3 class="card-title">Jobdesk and Time Schedule PLC Competition 2024</h3>
+              <p class="card-subtitle">WSEC 2024 · Workbook using Gantt Chart System</p>
             </div>
             <button class="arrow-button" type="button" data-open-doc="jd-ts" title="Lihat detail workbook JD-TS" aria-label="Lihat detail workbook JD-TS">
               <svg class="icon" aria-hidden="true"><use href="#i-eye"></use></svg>
@@ -972,11 +978,32 @@
           </div>
         </div>
 
+        <div id="doc-gantt-container" class="gantt-viewer-container" hidden>
+          <div class="gantt-sheet-toolbar">
+            <div>
+              <strong>JD-TS PLC Competition WSEC 2024</strong>
+              <span>Gantt Chart · 102 tugas · 22 Mei–31 Oktober 2024</span>
+            </div>
+            <div class="gantt-legend" aria-label="Legenda Gantt Chart">
+              <span><i class="gantt-legend-progress"></i>Jadwal</span>
+              <span><i class="gantt-legend-deadline"></i>Tenggat</span>
+            </div>
+          </div>
+          <div class="gantt-sheet-scroll" role="region" aria-label="Lembar Excel Gantt Chart, gulir horizontal untuk melihat semua tanggal" tabindex="0">
+            <table class="gantt-table" id="gantt-table">
+              <colgroup id="gantt-colgroup"></colgroup>
+              <thead id="gantt-thead"></thead>
+              <tbody id="gantt-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
 
   <!-- Main JavaScript File -->
+  <script src="js/gantt-data.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

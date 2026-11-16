@@ -83,6 +83,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const fileContainer = document.getElementById('doc-file-container');
   const fileName = document.getElementById('doc-file-name');
   const fileDescription = document.getElementById('doc-file-description');
+  const ganttContainer = document.getElementById('doc-gantt-container');
+  const ganttColgroup = document.getElementById('gantt-colgroup');
+  const ganttHead = document.getElementById('gantt-thead');
+  const ganttBody = document.getElementById('gantt-tbody');
   const pdfFrame = document.getElementById('doc-pdf-iframe');
   const pdfFallback = document.getElementById('pdf-fallback-notice');
   const pdfFallbackLink = document.getElementById('pdf-fallback-link');
@@ -128,14 +132,98 @@ document.addEventListener('DOMContentLoaded', () => {
       meta: 'Portofolio • PDF'
     },
     'jd-ts': {
-      title: 'JD-TS PLC Competition WSEC 2024',
-      subtitle: 'Workbook kompetisi PLC untuk WSEC 2024',
-      type: 'file',
+      title: 'Gantt Chart / Time Schedule PLC Competition 2024',
+      subtitle: 'Jadwal kerja panitia, tenggat, Technical Meeting, Penyisihan, dan Final',
+      type: 'gantt',
       file: 'assets/docs/JD-TS_PLC_COMPETITION_WSEC_2024.xlsx',
       meta: 'Microsoft Excel • WSEC 2024',
       fileDescription: 'Workbook berisi sheet JD&TM serta Rapat dan Sharing.'
     }
   };
+
+  let ganttRendered = false;
+
+  function renderGanttSheet() {
+    const tasks = Array.isArray(window.ganttTasks) ? window.ganttTasks : [];
+    if (!ganttColgroup || !ganttHead || !ganttBody || tasks.length === 0) return;
+
+    const firstExcelDate = 45434; // 22 May 2024
+    const lastExcelDate = 45596;  // 31 October 2024
+    const dayCount = lastExcelDate - firstExcelDate + 1;
+    const excelDate = (serial) => new Date(Date.UTC(1899, 11, 30) + serial * 86400000);
+    const dateLabel = new Intl.DateTimeFormat('id-ID', {
+      day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC'
+    });
+    const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (character) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[character]);
+
+    const dates = Array.from({ length: dayCount }, (_, index) => {
+      const serial = firstExcelDate + index;
+      return { serial, date: excelDate(serial) };
+    });
+    const months = [];
+    dates.forEach(({ date }) => {
+      const key = `${date.getUTCFullYear()}-${date.getUTCMonth()}`;
+      const current = months[months.length - 1];
+      if (current && current.key === key) current.span += 1;
+      else months.push({ key, span: 1, date });
+    });
+
+    const fixedColumns = [38, 148, 48, 340, 112, 72];
+    ganttColgroup.innerHTML = fixedColumns.map((width) => `<col style="width:${width}px">`).join('')
+      + dates.map(() => '<col style="width:20px">').join('');
+
+    const fixedHeaders = [
+      ['Baris', 'gantt-row-index'], ['Jabatan', ''], ['No.', ''],
+      ['Jobdesk', ''], ['Deadline', ''], ['Durasi', '']
+    ];
+    const topHeaders = fixedHeaders.map(([label, className]) =>
+      `<th ${className ? `class="${className}"` : ''} rowspan="2">${label}</th>`).join('')
+      + months.map(({ date, span }) => {
+        const label = new Intl.DateTimeFormat('id-ID', {
+          month: 'long', year: 'numeric', timeZone: 'UTC'
+        }).format(date);
+        return `<th class="gantt-month" colspan="${span}">${escapeHtml(label)}</th>`;
+      }).join('');
+    const dayHeaders = dates.map(({ date }) => {
+      const weekend = date.getUTCDay() === 0 || date.getUTCDay() === 6;
+      return `<th class="gantt-day${weekend ? ' is-weekend' : ''}" title="${escapeHtml(dateLabel.format(date))}">${date.getUTCDate()}</th>`;
+    }).join('');
+    ganttHead.innerHTML = `<tr>${topHeaders}</tr><tr>${dayHeaders}</tr>`;
+
+    ganttBody.innerHTML = tasks.map((task) => {
+      const numericDeadline = typeof task.deadline === 'number' && Number.isFinite(task.deadline);
+      const deadlineText = numericDeadline ? dateLabel.format(excelDate(task.deadline)) : (task.deadline || '');
+      let progressDays = 0;
+      let deadlineCell = '';
+      if (numericDeadline) {
+        const offset = Math.floor(task.deadline - firstExcelDate);
+        if (offset >= dayCount) progressDays = dayCount;
+        else if (offset >= 0) {
+          progressDays = offset;
+          deadlineCell = `<td class="gantt-deadline-cell" title="Tenggat: ${escapeHtml(deadlineText)}"></td>`;
+        }
+      }
+
+      let timeline = '';
+      if (progressDays > 0) timeline += `<td class="gantt-progress-cell" colspan="${progressDays}" title="Jadwal hingga tenggat"></td>`;
+      timeline += deadlineCell;
+      const remainingDays = dayCount - progressDays - (deadlineCell ? 1 : 0);
+      if (remainingDays > 0) timeline += `<td class="gantt-empty-cell" colspan="${remainingDays}"></td>`;
+
+      return `<tr>
+        <td class="gantt-row-index">${task.row}</td>
+        <td class="gantt-department-cell">${escapeHtml(task.department)}</td>
+        <td class="gantt-number-cell">${escapeHtml(task.number)}</td>
+        <td class="gantt-task-cell">${escapeHtml(task.task)}</td>
+        <td class="gantt-deadline-label">${escapeHtml(deadlineText)}</td>
+        <td class="gantt-duration-cell"></td>
+        ${timeline}
+      </tr>`;
+    }).join('');
+    ganttRendered = true;
+  }
 
   const isModalOpen = () => Boolean(modal && modal.classList.contains('active'));
 
@@ -170,13 +258,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const isPdf = doc.type === 'pdf';
     const isExcelPreview = doc.type === 'excel';
     const isDownloadableFile = doc.type === 'file';
+    const isGantt = doc.type === 'gantt';
     if (pdfContainer) pdfContainer.hidden = !isPdf;
     if (excelContainer) excelContainer.hidden = !isExcelPreview;
     if (fileContainer) fileContainer.hidden = !isDownloadableFile;
+    if (ganttContainer) ganttContainer.hidden = !isGantt;
     if (btnOpenExternal) btnOpenExternal.hidden = !isPdf;
     if (btnDownload) btnDownload.hidden = false;
     if (fileName) fileName.textContent = doc.file.split('/').pop();
     if (fileDescription) fileDescription.textContent = doc.fileDescription || '';
+    if (isGantt && !ganttRendered) renderGanttSheet();
 
     if (isPdf && pdfFrame) {
       const source = `${doc.file}#toolbar=1&navpanes=1&view=FitH`;

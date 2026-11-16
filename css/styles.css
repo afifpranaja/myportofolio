@@ -291,6 +291,26 @@ body.light .project-card:hover, body.light .cert-card:hover, body.light .tool-ca
   font-weight: 700;
   letter-spacing: .04em;
 }
+.gantt-project-preview { gap: 8px; padding: 10px; }
+.gantt-mini-sheet {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  background: #fff;
+  color: #334155;
+  font: 8px/1.2 Arial, sans-serif;
+  text-align: left;
+}
+.gantt-mini-row { display: grid; grid-template-columns: 1.5fr 1fr; min-height: 19px; }
+.gantt-mini-row + .gantt-mini-row { border-top: 1px solid #e2e8f0; }
+.gantt-mini-row > span { position: relative; overflow: hidden; padding: 4px; white-space: nowrap; text-overflow: ellipsis; }
+.gantt-mini-row > span + span { border-left: 1px solid #e2e8f0; background-image: repeating-linear-gradient(to right, transparent 0, transparent 17px, #edf0f4 17px, #edf0f4 18px); }
+.gantt-mini-row > span > i { display: block; width: var(--bar-width); height: 8px; border-right: 2px solid #e55353; background: #f7d66a; }
+.gantt-mini-heading { background: #f1f5f9; font-weight: 700; }
+.gantt-mini-heading > span { padding-block: 5px; }
 .project-details { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; }
 .project-copy { min-width: 0; flex: 1; }
 .card-title {
@@ -751,6 +771,70 @@ body.light .doc-viewport {
 .doc-file-card p { color: var(--body); font-size: 14px; line-height: 1.55; }
 .doc-file-card .doc-file-hint { color: var(--quiet); font-size: 12.5px; }
 
+/* Excel-style Gantt worksheet */
+.gantt-viewer-container {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+  background: #fff;
+  color: #1f2937;
+}
+.gantt-sheet-toolbar {
+  display: flex;
+  min-height: 58px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 18px;
+  border-bottom: 1px solid #d8dee8;
+  background: #f8fafc;
+  color: #1f2937;
+}
+.gantt-sheet-heading { display: flex; min-width: 0; flex-direction: column; gap: 3px; }
+.gantt-sheet-heading strong { font-size: 13px; }
+.gantt-sheet-heading > span { color: #64748b; font-size: 11.5px; }
+.gantt-legend { display: flex; flex: none; align-items: center; gap: 12px; color: #475569; font-size: 11px; }
+.gantt-legend > span { display: inline-flex; align-items: center; gap: 5px; }
+.gantt-legend i { display: inline-block; width: 13px; height: 13px; border: 1px solid #d1d5db; }
+.gantt-legend-progress { background: #f7d66a; }
+.gantt-legend-deadline { background: #e55353; }
+.gantt-sheet-scroll { min-height: 0; flex: 1; overflow: auto; overscroll-behavior: contain; background: #fff; }
+.gantt-table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  color: #1f2937;
+  font: 11px/1.35 Arial, sans-serif;
+}
+.gantt-table th, .gantt-table td { height: 28px; padding: 4px 6px; border-right: 1px solid #dfe3e8; border-bottom: 1px solid #dfe3e8; }
+.gantt-table thead th { position: sticky; z-index: 2; background: #f1f3f4; text-align: center; font-weight: 600; }
+.gantt-table thead tr:first-child th { top: 0; height: 30px; }
+.gantt-table thead tr:nth-child(2) th { top: 30px; height: 26px; }
+.gantt-table thead th:first-child, .gantt-table tbody .gantt-row-index { position: sticky; left: 0; z-index: 3; }
+.gantt-table thead th:first-child { z-index: 5; }
+.gantt-table .gantt-row-index { width: 38px; background: #f1f3f4; color: #64748b; text-align: right; font-variant-numeric: tabular-nums; }
+.gantt-table .gantt-month { background: #e8edf3; text-transform: capitalize; }
+.gantt-table .gantt-day { width: 20px; min-width: 20px; padding: 3px 1px; font-size: 9px; color: #475569; }
+.gantt-table .gantt-day.is-weekend { background: #fce8e6; color: #b42318; }
+.gantt-table .gantt-department-cell { background: #f8fafc; font-weight: 600; }
+.gantt-table .gantt-number-cell, .gantt-table .gantt-deadline-label, .gantt-table .gantt-duration-cell { text-align: center; font-variant-numeric: tabular-nums; }
+.gantt-table .gantt-task-cell { white-space: normal; overflow-wrap: anywhere; }
+.gantt-table .gantt-progress-cell, .gantt-table .gantt-empty-cell { padding: 0; }
+.gantt-table .gantt-progress-cell {
+  background-color: #fff2b2;
+  background-image: repeating-linear-gradient(to right, transparent 0, transparent 19px, #eadc9f 19px, #eadc9f 20px);
+}
+.gantt-table .gantt-deadline-cell { min-width: 20px; padding: 0; background: #e55353; }
+.gantt-table .gantt-empty-cell {
+  background-color: #fff;
+  background-image: repeating-linear-gradient(to right, transparent 0, transparent 19px, #e8ebef 19px, #e8ebef 20px);
+}
+.gantt-table tbody tr:hover .gantt-task-cell, .gantt-table tbody tr:hover .gantt-department-cell { background-color: #f1f7ff; }
+
 /* Excel Data Viewer Viewport */
 .excel-viewer-container {
   flex: 1;
@@ -907,6 +991,7 @@ body.light .doc-viewport {
   .doc-tabs-bar { padding: 8px 16px; }
   .doc-toolbar { padding: 8px 16px; flex-direction: column; align-items: flex-start; gap: 8px; }
   .doc-actions { width: 100%; justify-content: flex-end; }
+  .gantt-sheet-toolbar { align-items: flex-start; flex-direction: column; }
 }
 @media (max-width: 520px) {
   #certification .card-list { grid-template-columns: 1fr; }
