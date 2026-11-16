@@ -358,6 +358,14 @@ body.light .resume-card:hover { border-color: rgba(0, 0, 0, 0.12); }
   color: var(--amber);
   width: fit-content;
 }
+.cert-tag.cyan {
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--primary);
+}
+.cert-tag.green {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--green);
+}
 
 /* Tools */
 .tool-card {
