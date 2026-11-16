@@ -288,6 +288,11 @@ body.light .project-card:hover, body.light .cert-card:hover, body.light .tool-ca
   background: var(--tag);
   color: var(--body);
   transition: all .2s ease;
+  cursor: pointer;
+  padding: 0;
+}
+.project-card[data-open-doc] {
+  cursor: pointer;
 }
 .project-card:hover .arrow-button, .cert-card:hover .arrow-button, .contact-card:hover .arrow-button {
   color: var(--heading);
@@ -405,6 +410,371 @@ body.light .resume-card:hover { border-color: rgba(0, 0, 0, 0.12); }
 .copyright a { color: var(--body); text-decoration: underline; text-underline-offset: 3px; }
 .copyright a:hover { color: var(--heading); }
 
+/* Document Viewer Modal */
+.doc-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(8, 10, 15, 0.82);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+  visibility: hidden;
+}
+.doc-modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+}
+body.modal-open {
+  overflow: hidden;
+}
+.doc-modal-box {
+  position: relative;
+  width: 100%;
+  max-width: 1020px;
+  height: 90vh;
+  max-height: 860px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 30px 80px -15px rgba(0, 0, 0, 0.7);
+  transform: translateY(16px) scale(0.98);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.doc-modal-overlay.active .doc-modal-box {
+  transform: translateY(0) scale(1);
+}
+.doc-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  gap: 16px;
+}
+.doc-header-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.doc-header-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: var(--tag);
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+  color: var(--primary);
+  flex: none;
+}
+.doc-header-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.doc-modal-title {
+  color: var(--heading);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.doc-modal-subtitle {
+  color: var(--quiet);
+  font-size: 12.5px;
+}
+.modal-close-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--tag);
+  color: var(--body);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: all .2s ease;
+  flex: none;
+}
+.modal-close-btn:hover {
+  color: var(--heading);
+  background: var(--border);
+  transform: rotate(90deg);
+}
+
+/* Document Tabs */
+.doc-tabs-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  background: var(--page);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.doc-tabs-bar::-webkit-scrollbar {
+  display: none;
+}
+.doc-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--body);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .2s ease;
+}
+.doc-tab-btn:hover {
+  color: var(--heading);
+  background: var(--surface);
+  border-color: var(--border);
+}
+.doc-tab-btn.active {
+  color: var(--heading);
+  background: var(--surface);
+  border-color: var(--border);
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+.doc-tab-btn .tab-badge {
+  font-size: 10.5px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--tag);
+  color: var(--primary);
+  border: 1px solid var(--border);
+}
+.doc-tab-btn.active .tab-badge {
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--primary);
+}
+
+/* Document Toolbar */
+.doc-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 24px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  gap: 12px;
+}
+.doc-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--quiet);
+  font-size: 12.5px;
+}
+.doc-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.doc-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+.doc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--heading);
+  background: var(--tag);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all .2s ease;
+  text-decoration: none;
+}
+.doc-btn:hover {
+  background: var(--border);
+  transform: translateY(-1px);
+}
+.doc-btn.primary {
+  background: var(--primary);
+  color: #0b1329;
+  border-color: var(--primary);
+  font-weight: 600;
+}
+.doc-btn.primary:hover {
+  opacity: 0.92;
+}
+
+/* Document Viewport */
+.doc-viewport {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  background: #0f1218;
+  display: flex;
+  flex-direction: column;
+}
+body.light .doc-viewport {
+  background: #f1f3f6;
+}
+.doc-iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #ffffff;
+}
+
+/* Excel Data Viewer Viewport */
+.excel-viewer-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--surface);
+}
+.excel-header-card {
+  padding: 16px 24px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.excel-summary-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.stat-pill {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.stat-pill-label {
+  font-size: 11px;
+  color: var(--quiet);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.stat-pill-val {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--heading);
+  font-family: monospace;
+}
+.excel-subtabs-nav {
+  display: flex;
+  gap: 6px;
+  padding: 8px 24px;
+  background: var(--page);
+  border-bottom: 1px solid var(--border);
+}
+.excel-subtab-btn {
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--body);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.excel-subtab-btn.active {
+  color: var(--heading);
+  background: var(--surface);
+  border-color: var(--border);
+  font-weight: 600;
+}
+.excel-table-scroll {
+  flex: 1;
+  overflow: auto;
+  padding: 16px 24px;
+}
+.engineering-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  text-align: left;
+}
+.engineering-table th {
+  position: sticky;
+  top: 0;
+  background: var(--tag);
+  color: var(--heading);
+  font-weight: 600;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+  z-index: 10;
+}
+.engineering-table td {
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  color: var(--body);
+  line-height: 1.4;
+}
+.engineering-table tr:hover td {
+  background: var(--hover);
+  color: var(--heading);
+}
+.engineering-table .category-header td {
+  background: var(--tag);
+  color: var(--primary);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 11.5px;
+  letter-spacing: 0.03em;
+}
+.engineering-table td.num {
+  text-align: right;
+  font-family: monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Fallback Notice */
+.pdf-fallback-notice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 40px;
+  text-align: center;
+  height: 100%;
+  color: var(--body);
+}
+.pdf-fallback-notice p {
+  max-width: 440px;
+  line-height: 1.6;
+}
+
 /* Responsive adjustments */
 @media (max-width: 809.98px) {
   .site-header { padding-top: 12px; }
@@ -427,4 +797,9 @@ body.light .resume-card:hover { border-color: rgba(0, 0, 0, 0.12); }
   .cert-info { width: 100%; }
   .contact-info { width: 100%; flex-direction: column; align-items: flex-start; gap: 6px; }
   .contact-label, .contact-value { flex: none; width: 100%; text-align: left; }
+  .doc-modal-box { height: 96vh; max-height: 96vh; border-radius: 16px; }
+  .doc-modal-header { padding: 12px 16px; }
+  .doc-tabs-bar { padding: 8px 16px; }
+  .doc-toolbar { padding: 8px 16px; flex-direction: column; align-items: flex-start; gap: 8px; }
+  .doc-actions { width: 100%; justify-content: flex-end; }
 }
