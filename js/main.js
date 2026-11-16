@@ -1,65 +1,76 @@
 /**
- * Main JavaScript for Afif Athaullah Pranaja Portfolio
-<<<<<<< HEAD
- * Handles live clock, dark/light theme switching with persistence,
- * and Interactive Engineering Document Viewer Modal.
-=======
- * Handles live clock and dark/light theme switching with persistence.
->>>>>>> ef704a0aaa36c402f6c9c94490c40b86336b878f
+ * Portfolio interactions: WIB clock, theme toggle, and document viewer.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Live Malang, Indonesia (WIB) Clock
+  // Keep the clock anchored to Malang even when the visitor is elsewhere.
   const clock = document.getElementById('malang-time');
   if (clock) {
-    const formatter = new Intl.DateTimeFormat('en-US', {
-      timeZone: 'Asia/Jakarta',
-      hour: 'numeric',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: true
-    });
+    let formatJakartaTime;
+    try {
+      const formatter = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Asia/Jakarta',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hourCycle: 'h23'
+      });
+      formatJakartaTime = (date) => formatter.format(date);
+    } catch (error) {
+      // Asia/Jakarta is UTC+7; this fallback also works in older browsers.
+      formatJakartaTime = (date) => {
+        const jakarta = new Date(date.getTime() + 7 * 60 * 60 * 1000);
+        return [jakarta.getUTCHours(), jakarta.getUTCMinutes(), jakarta.getUTCSeconds()]
+          .map((part) => String(part).padStart(2, '0'))
+          .join(':');
+      };
+    }
 
     const updateClock = () => {
-      try {
-        clock.textContent = `${formatter.format(new Date())} WIB`;
-      } catch (e) {
-        clock.textContent = new Date().toLocaleTimeString();
-      }
+      const now = new Date();
+      clock.textContent = `${formatJakartaTime(now)} WIB`;
+      clock.dateTime = now.toISOString();
     };
 
     updateClock();
-    setInterval(updateClock, 1000);
+    window.setInterval(updateClock, 1000);
   }
 
-  // Theme Toggle with LocalStorage persistence
+  // Theme preference is optional storage: the toggle must still work if
+  // browser privacy settings block localStorage.
   const themeToggle = document.getElementById('theme-toggle');
   const themeIcon = document.getElementById('theme-icon');
-
   if (themeToggle && themeIcon) {
-<<<<<<< HEAD
-=======
-    // Check saved preference or system preference
->>>>>>> ef704a0aaa36c402f6c9c94490c40b86336b878f
-    const savedTheme = localStorage.getItem('site-theme');
-    if (savedTheme === 'light') {
-      document.body.classList.add('light');
-      themeIcon.setAttribute('href', '#i-sun');
-      themeToggle.setAttribute('aria-label', 'Switch to dark theme');
+    let savedTheme = null;
+    try {
+      savedTheme = window.localStorage.getItem('site-theme');
+    } catch (error) {
+      // Use the default dark theme for this session.
     }
 
-    themeToggle.addEventListener('click', () => {
-      const isLight = document.body.classList.toggle('light');
+    const applyTheme = (isLight, persist = false) => {
+      document.body.classList.toggle('light', isLight);
       themeIcon.setAttribute('href', isLight ? '#i-sun' : '#i-moon');
       themeToggle.setAttribute('aria-label', isLight ? 'Switch to dark theme' : 'Switch to light theme');
-      localStorage.setItem('site-theme', isLight ? 'light' : 'dark');
+      themeToggle.setAttribute('aria-pressed', String(isLight));
+      themeToggle.title = isLight ? 'Switch to dark theme' : 'Switch to light theme';
+
+      if (persist) {
+        try {
+          window.localStorage.setItem('site-theme', isLight ? 'light' : 'dark');
+        } catch (error) {
+          // Theme switching remains available until the page is closed.
+        }
+      }
+    };
+
+    applyTheme(savedTheme === 'light');
+    themeToggle.addEventListener('click', () => {
+      applyTheme(!document.body.classList.contains('light'), true);
     });
   }
-<<<<<<< HEAD
 
-  // ==========================================
-  // Engineering Document Viewer Modal System
-  // ==========================================
+  // Engineering document viewer.
   const modal = document.getElementById('doc-modal');
   const closeBtn = document.getElementById('doc-modal-close');
   const modalTitle = document.getElementById('doc-modal-title');
@@ -69,166 +80,162 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnDownload = document.getElementById('doc-btn-download');
   const pdfContainer = document.getElementById('doc-pdf-container');
   const excelContainer = document.getElementById('doc-excel-container');
+  const fileContainer = document.getElementById('doc-file-container');
+  const fileName = document.getElementById('doc-file-name');
+  const fileDescription = document.getElementById('doc-file-description');
   const pdfFrame = document.getElementById('doc-pdf-iframe');
+  const pdfFallback = document.getElementById('pdf-fallback-notice');
+  const pdfFallbackLink = document.getElementById('pdf-fallback-link');
   const tabBtns = document.querySelectorAll('.doc-tab-btn');
+  const excelSubtabBtns = document.querySelectorAll('.excel-subtab-btn');
+  const excelSheets = document.querySelectorAll('.excel-sheet-content');
+  let previouslyFocusedElement = null;
 
-  // Document Registry
   const documents = {
     'rumah-3-lantai': {
       title: 'Desain Denah Instalasi Kelistrikan Rumah Mewah 3 Lantai',
       subtitle: 'Gambar Kerja AutoCAD 2D • Layout Titik Lampu, Stop Kontak, Saklar & Jalur Conduit',
       type: 'pdf',
       file: 'assets/docs/Desain_Instalasi_Rumah_3_Lantai.pdf',
-      originalFile: 'assets/docs/project installation rumah 3 lantai_recover-Model.pdf',
-      meta: 'AutoCAD 2D • ISO A3 Full Bleed • Skala 1:100 • Standar PUIL 2011',
-      formatBadge: 'PDF DRAWING'
+      meta: 'AutoCAD 2D • ISO A3 Full Bleed • Skala 1:100 • Standar PUIL 2011'
     },
-    'sld': {
+    sld: {
       title: 'Single Line Diagram (SLD) & Distribusi Daya 3-Fasa',
       subtitle: 'Diagram Satu Garis Pembagian Fasa R-S-T Seimbang, Proteksi MCB/MCCB & Sistem Grounding',
       type: 'pdf',
       file: 'assets/docs/SLD_Sistem_Kelistrikan.pdf',
-      originalFile: 'assets/docs/SLD.pdf',
-      meta: 'AutoCAD 2D • Single Line Diagram • 3-Phase Balance • Standar PUIL / PLN',
-      formatBadge: 'SLD SCHEMATIC'
+      meta: 'AutoCAD 2D • Single Line Diagram • 3-Phase Balance • Standar PUIL / PLN'
     },
-    'rab': {
+    rab: {
       title: 'Rencana Anggaran Biaya (RAB) & Perhitungan Beban',
       subtitle: 'Kalkulasi Iluminasi Ruangan (Lux/Kp) & Bill of Quantities (BOQ) Tipe 124',
       type: 'excel',
       file: 'assets/docs/RAB_Rumah_Mewah_3_Lantai.xlsx',
-      originalFile: 'assets/docs/RAB_Rumah Mewah 3 lantai.xlsx',
-      meta: 'Microsoft Excel (.xlsx) • Sheet: BOQ & LOAD • Nilai Real Komponen & Upah Kerja',
-      formatBadge: 'EXCEL DATA'
+      meta: 'Microsoft Excel (.xlsx) • Sheet: BOQ & LOAD • Nilai Real Komponen & Upah Kerja'
     },
     'gedung-ppp': {
       title: 'Perancangan Sistem Instalasi Listrik Gedung (Proyek Instalasi II)',
       subtitle: 'Gambar Kerja AutoCAD 2D • Jalur Distribusi Daya, Panel Penerangan & Kabel Tray',
       type: 'pdf',
       file: 'assets/docs/Desain_Instalasi_Gedung_PPP.pdf',
-      originalFile: 'assets/docs/project installaion ppp-Model.pdf',
-      meta: 'AutoCAD 2D • Proyek Instalasi II (Semester 5) • D4 Sistem Kelistrikan Polinema',
-      formatBadge: 'PDF DRAWING'
+      meta: 'AutoCAD 2D • Proyek Instalasi II (Semester 5) • D4 Sistem Kelistrikan Polinema'
+    },
+    'portofolio-3d': {
+      title: 'Portofolio Desain 3D',
+      subtitle: 'Kumpulan karya pemodelan dan visualisasi 3D',
+      type: 'pdf',
+      file: 'assets/docs/Portofolio_3D.pdf',
+      meta: 'Portofolio • PDF'
+    },
+    'jd-ts': {
+      title: 'JD-TS PLC Competition WSEC 2024',
+      subtitle: 'Workbook kompetisi PLC untuk WSEC 2024',
+      type: 'file',
+      file: 'assets/docs/JD-TS_PLC_COMPETITION_WSEC_2024.xlsx',
+      meta: 'Microsoft Excel • WSEC 2024',
+      fileDescription: 'Workbook berisi sheet JD&TM serta Rapat dan Sharing.'
     }
   };
 
-  let currentDocKey = 'rumah-3-lantai';
+  const isModalOpen = () => Boolean(modal && modal.classList.contains('active'));
 
   function openDocument(docKey) {
-    if (!documents[docKey]) return;
-    currentDocKey = docKey;
     const doc = documents[docKey];
+    if (!modal || !doc) return;
 
-    // Update Header & Meta
+    if (!isModalOpen()) previouslyFocusedElement = document.activeElement;
     if (modalTitle) modalTitle.textContent = doc.title;
     if (modalSubtitle) modalSubtitle.textContent = doc.subtitle;
     if (modalMeta) {
       modalMeta.innerHTML = `
         <span class="doc-meta-item">
           <svg class="icon icon-small" aria-hidden="true"><use href="#i-doc"></use></svg>
-          <span>${doc.meta}</span>
-        </span>
-      `;
+          <span></span>
+        </span>`;
+      modalMeta.querySelector('.doc-meta-item span').textContent = doc.meta;
     }
 
-    // Update Action Links
-    if (btnOpenExternal) {
-      btnOpenExternal.href = doc.file;
-      btnOpenExternal.target = '_blank';
-      btnOpenExternal.rel = 'noopener noreferrer';
-    }
+    if (btnOpenExternal) btnOpenExternal.href = doc.file;
     if (btnDownload) {
       btnDownload.href = doc.file;
       btnDownload.setAttribute('download', doc.file.split('/').pop());
     }
 
-    // Update Tab Styles
-    tabBtns.forEach(btn => {
-      const tabKey = btn.getAttribute('data-doc-target');
-      btn.classList.toggle('active', tabKey === docKey);
+    tabBtns.forEach((button) => {
+      const active = button.getAttribute('data-doc-target') === docKey;
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-selected', String(active));
     });
 
-    // Render Viewport
-    if (doc.type === 'pdf') {
-      if (excelContainer) excelContainer.style.display = 'none';
-      if (pdfContainer) pdfContainer.style.display = 'flex';
-      if (pdfFrame) {
-        // Only reload if source changed to avoid flash
-        if (!pdfFrame.src.endsWith(doc.file)) {
-          pdfFrame.src = doc.file + '#toolbar=1&navpanes=1';
-        }
-      }
-    } else if (doc.type === 'excel') {
-      if (pdfContainer) pdfContainer.style.display = 'none';
-      if (excelContainer) excelContainer.style.display = 'flex';
+    const isPdf = doc.type === 'pdf';
+    const isExcelPreview = doc.type === 'excel';
+    const isDownloadableFile = doc.type === 'file';
+    if (pdfContainer) pdfContainer.hidden = !isPdf;
+    if (excelContainer) excelContainer.hidden = !isExcelPreview;
+    if (fileContainer) fileContainer.hidden = !isDownloadableFile;
+    if (btnOpenExternal) btnOpenExternal.hidden = !isPdf;
+    if (btnDownload) btnDownload.hidden = false;
+    if (fileName) fileName.textContent = doc.file.split('/').pop();
+    if (fileDescription) fileDescription.textContent = doc.fileDescription || '';
+
+    if (isPdf && pdfFrame) {
+      const source = `${doc.file}#toolbar=1&navpanes=1&view=FitH`;
+      if (pdfFallback) pdfFallback.hidden = true;
+      if (pdfFallbackLink) pdfFallbackLink.href = doc.file;
+      if (pdfFrame.getAttribute('src') !== source) pdfFrame.setAttribute('src', source);
     }
 
-    // Show Modal
-    if (modal) {
-      modal.classList.add('active');
-      document.body.classList.add('modal-open');
-    }
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
+    modal.removeAttribute('inert');
+    document.body.classList.add('modal-open');
+    closeBtn?.focus();
   }
 
   function closeModal() {
-    if (modal) {
-      modal.classList.remove('active');
-      document.body.classList.remove('modal-open');
-    }
+    if (!modal || !isModalOpen()) return;
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
+    modal.setAttribute('inert', '');
+    document.body.classList.remove('modal-open');
+    previouslyFocusedElement?.focus?.();
+    previouslyFocusedElement = null;
   }
 
-  // Attach Open Modal to Trigger Elements
-  document.addEventListener('click', (e) => {
-    const trigger = e.target.closest('[data-open-doc]');
-    if (trigger) {
-      e.preventDefault();
-      const targetDoc = trigger.getAttribute('data-open-doc');
-      openDocument(targetDoc);
-    }
+  document.addEventListener('click', (event) => {
+    const trigger = event.target.closest('[data-open-doc]');
+    if (!trigger) return;
+    event.preventDefault();
+    openDocument(trigger.getAttribute('data-open-doc'));
   });
 
-  // Tab navigation inside modal
-  tabBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const targetDoc = btn.getAttribute('data-doc-target');
-      openDocument(targetDoc);
-    });
+  tabBtns.forEach((button) => {
+    button.addEventListener('click', () => openDocument(button.getAttribute('data-doc-target')));
+  });
+  closeBtn?.addEventListener('click', closeModal);
+  pdfFrame?.addEventListener('error', () => {
+    if (pdfFallback) pdfFallback.hidden = false;
   });
 
-  // Close handlers
-  if (closeBtn) {
-    closeBtn.addEventListener('click', closeModal);
-  }
-
-  if (modal) {
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        closeModal();
-      }
-    });
-  }
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal && modal.classList.contains('active')) {
-      closeModal();
-    }
+  modal?.addEventListener('click', (event) => {
+    if (event.target === modal) closeModal();
   });
 
-  // Sub-tabs switcher in Excel Viewer (BOQ vs LOAD)
-  const excelSubtabBtns = document.querySelectorAll('.excel-subtab-btn');
-  const excelSheets = document.querySelectorAll('.excel-sheet-content');
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeModal();
+  });
 
-  excelSubtabBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const sheetName = btn.getAttribute('data-sheet');
-      excelSubtabBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      excelSheets.forEach(sheet => {
-        sheet.style.display = (sheet.getAttribute('data-sheet-name') === sheetName) ? 'block' : 'none';
+  excelSubtabBtns.forEach((button) => {
+    button.addEventListener('click', () => {
+      const sheetName = button.getAttribute('data-sheet');
+      excelSubtabBtns.forEach((item) => {
+        const active = item === button;
+        item.classList.toggle('active', active);
+        item.setAttribute('aria-selected', String(active));
+      });
+      excelSheets.forEach((sheet) => {
+        sheet.hidden = sheet.getAttribute('data-sheet-name') !== sheetName;
       });
     });
   });
-=======
->>>>>>> ef704a0aaa36c402f6c9c94490c40b86336b878f
 });
